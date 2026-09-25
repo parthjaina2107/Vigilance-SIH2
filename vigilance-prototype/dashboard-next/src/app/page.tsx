@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import KPICard from '@/components/KPICard';
 import TelemetryFeed from '@/components/TelemetryFeed';
 import ClusterTable from '@/components/ClusterTable';
+import HardwareCockpit from '@/components/HardwareCockpit';
 import AgentThoughtStream from '@/components/manus/AgentThoughtStream';
 import CommandPalette from '@/components/manus/CommandPalette';
 import CorridorDistressSpline from '@/components/charts/CorridorDistressSpline';
@@ -254,6 +255,8 @@ export default function CommandCenterPage() {
           {/* Tab Content 1: Priority Queue & Live Telemetry Feed */}
           {sidebarTab === 'queue' && (
             <div className="flex-1 flex flex-col gap-2.5 overflow-y-auto custom-scrollbar pr-1 min-h-0">
+              {/* Edge AI Hardware Cockpit — GAP 3 Proof */}
+              <HardwareCockpit />
               <ClusterTable
                 clusters={clusters}
                 onStatusChange={updateStatus}

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { ShieldAlert, Radio, RefreshCw, Cpu, Activity, LayoutDashboard, BarChart3, Truck, ClipboardList, Search, Smartphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BackendConnectionStatus } from '@/hooks/useDashboardData';
+import CitySelector from './CitySelector';
 
 interface HeaderProps {
   activeVehicles?: number;
@@ -197,6 +198,11 @@ export default function Header({
 
         {/* UTC Clock */}
         <LiveUTCClock />
+
+        {/* City Selector Dropdown */}
+        <CitySelector onCityChange={(city) => {
+          console.log(`[VIGILANCE] Switched to ${city.display_name}`);
+        }} />
 
         {/* Trigger Dedup Button */}
         {onTriggerDedup && (

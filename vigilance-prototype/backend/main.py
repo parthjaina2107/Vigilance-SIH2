@@ -684,3 +684,58 @@ def get_fleet_positions(db: Session = Depends(get_db)):
         for p in positions
     ]
 
+
+# Multi-City Deployment Scalability API (SIH Municipal Portability)
+ACTIVE_CITY_KEY = "chennai"
+
+SUPPORTED_CITIES = [
+    {
+        "key": "chennai",
+        "display_name": "Chennai",
+        "state": "Tamil Nadu",
+        "center": {"lat": 13.0827, "lon": 80.2707},
+        "zoom": 12,
+        "municipal_body": "Greater Chennai Corporation (GCC)",
+        "is_active": True,
+    },
+    {
+        "key": "bangalore",
+        "display_name": "Bengaluru",
+        "state": "Karnataka",
+        "center": {"lat": 12.9716, "lon": 77.5946},
+        "zoom": 12,
+        "municipal_body": "Bruhat Bengaluru Mahanagara Palike (BBMP)",
+        "is_active": False,
+    },
+    {
+        "key": "delhi",
+        "display_name": "Delhi NCR",
+        "state": "NCT Delhi",
+        "center": {"lat": 28.6139, "lon": 77.2090},
+        "zoom": 11,
+        "municipal_body": "Municipal Corporation of Delhi (MCD)",
+        "is_active": False,
+    },
+]
+
+@app.get("/api/cities")
+def get_deployment_cities():
+    """Returns available municipal deployment configurations."""
+    global ACTIVE_CITY_KEY
+    for c in SUPPORTED_CITIES:
+        c["is_active"] = (c["key"] == ACTIVE_CITY_KEY)
+    return {"active": ACTIVE_CITY_KEY, "cities": SUPPORTED_CITIES}
+
+
+@app.post("/api/cities/switch")
+def switch_active_city(city_key: str = Query(...)):
+    """Switches the active urban fleet spatial scope."""
+    global ACTIVE_CITY_KEY
+    matched = next((c for c in SUPPORTED_CITIES if c["key"] == city_key.lower()), None)
+    if not matched:
+        raise HTTPException(status_code=404, detail=f"City '{city_key}' not provisioned")
+    ACTIVE_CITY_KEY = matched["key"]
+    for c in SUPPORTED_CITIES:
+        c["is_active"] = (c["key"] == ACTIVE_CITY_KEY)
+    return {"status": "success", "switched_to": matched}
+
